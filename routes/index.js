@@ -1,5 +1,7 @@
 var express = require('express')
-require("dotenv-safe").load()
+require("dotenv-safe")
+  .config({allowEmptyValues: true})
+  .load()
 var jwt = require('jsonwebtoken')
 var router = express.Router()
 
