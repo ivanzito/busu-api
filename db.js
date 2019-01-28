@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-mongoose.connect(process.env.MONGODB_URI + '/users');
+mongoose.connect(process.env.MONGODB_URI);
 
 let userSchema = new mongoose.Schema({
     email: String,
