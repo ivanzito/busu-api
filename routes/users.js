@@ -16,6 +16,11 @@ router.get('/', function(req, res, next) {
 
 /* POST users login */
 router.post('/login', function(req, res, next) {
+
+  console.log('email', req.body.email)
+  console.log('pwd', req.body.password)
+
+
   const db = require('../db')
   const Users = db.Mongoose.model('users', db.UserSchema, 'users')
   Users.findOne({'email': req.body.email})
