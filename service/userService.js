@@ -1,37 +1,26 @@
-var bcrypt = require('bcrypt')
-var userRepository = require('../repository/userRepository')
+const bcrypt = require('bcrypt')
+const userRepository = require('../repository/userRepository')
 
+module.exports = {
+    findAll: function() {
+        return userRepository.findAll()
+    },
+
+    findByEmail: function(email) {
+        return userRepository.findByEmail(email)
+    },
     
-    const findAll = () => function() {
-        userRepository.findAll()
-    }
+    save: function(email, pwd) {
+        return userRepository.save(email, pwd)
+    },
 
-    const findUserByEmail = (email) => function() {
-        let user = userRepository.findUserByEmail(email)
-        console.info(user)
-        return user
-    }
-    
-    const saveUser = (User) => function() {
-        userRepository.saveUser(User)
-    }
-
-    const newUser = (email, password) => function() {
+    newUser: function(email, password) {
         const saltRounds = 10
         bcrypt.genSalt(saltRounds, (err, salt) => {
             bcrypt.hash(password, salt, (err, hash) => {
-                let newUser = new Users({ 'email': email, 'password': hash })
-                    newUser.save((err) => {
-                        if (err) false
-                        else newUser
-                })
+                let user = this.save(email, hash)
+                console.log('newUser',user)
             })
         })
     }
-
-module.exports = {
-    newUser,
-    saveUser,
-    findUserByEmail,
-    findAll
 }

@@ -1,31 +1,30 @@
 const db = require('../config/db/mongoose')
-    const findAll = () => function() {
-        const Users = db.Mongoose.model('users', db.UserSchema, 'users')
-        Users.find({}, (err, arr) => {
-            if (err) []
-            else arr
-        }).lean();
-        
-    }
-
-    const findUserByEmail = (email) => function() {
-        const Users = db.Mongoose.model('users', db.UserSchema, 'users')
-        Users.findOne({'email': email}).exec((err, user) => {
-            if(err) err
-            if(user != null) user 
-        }).lean()   
-    }
-
-    const saveUser = user => function() {
-        const Users = db.Mongoose.model('users', db.UserSchema, 'users')
-        return Users.save(user), (err, user) => {
-            if(err) return err
-            else return user.lean()
-        }
-    }
 
 module.exports = {
-    findAll,
-    findUserByEmail,
-    saveUser
+    findAll: function() {
+        const Users = db.Mongoose.model('users', db.UserSchema, 'users')
+        return Promise.resolve(Users.find({})
+                                    .lean()
+                                    .then(res => res, err => new Error(err)))
+    },
+
+    findByEmail: function(mail) {
+        const Users = db.Mongoose.model('users', db.UserSchema, 'users')
+        return Promise.resolve(Users.findOne({'email': mail})
+                      .lean()
+                      .then(doc => doc, err => new Error(err)))
+    },
+
+    save: function(mail, password) {
+        const Users = db.Mongoose.model('users', db.UserSchema, 'users')
+        const user = new Users({'email': mail, 'password':password})
+        user.save((err, user) => {
+            if(err) new Error(err)
+            else {
+                return Users.findById(user._id)
+                            .lean()
+                            .catch(err => new Error(err))
+            } 
+        })
+    }
 }
